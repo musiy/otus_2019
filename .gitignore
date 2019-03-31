@@ -23,7 +23,7 @@
 hs_err_pid*
 
 # mvn target
-/target
+target/
 
 # idea files
 /.idea
