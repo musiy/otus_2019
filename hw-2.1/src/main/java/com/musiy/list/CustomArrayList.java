@@ -1,27 +1,50 @@
 package com.musiy.list;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
+/**
+ * Пример реализации саморасширяющейгося списка на основе массива.
+ * @param <T> тип данных массива
+ */
 public class CustomArrayList<T> implements List<T> {
 
-    private static int DEFAULT_SIZE = 1;
+    /**
+     * Ёмкость массива по умолчанию
+     */
+    private static int DEFAULT_CAPACITY = 16;
 
+    /**
+     * Фактор увеличения массива.
+     * FACTOR = 2.0 ознчает, что при расширении ёмкость будет увеличена в два раза.
+     */
     private static double FACTOR = 2.0;
 
+    /**
+     * Внутреннее хранилище
+     */
     private Object[] arr;
 
+    /**
+     * Текущий размер массива.
+     * Изначально = 0. После добавления первого элемента = 1. и т.д.
+     * size всегда <= arr.length
+     */
     private int size;
 
+    /**
+     * Текущее состояние массива.
+     * Меняется при изменении массива.
+     */
     private int modifications = 0;
 
+
     public CustomArrayList() {
-        this(DEFAULT_SIZE);
+        this(DEFAULT_CAPACITY);
     }
 
-    @SuppressWarnings("unchecked")
-    public CustomArrayList(int size) {
-        arr = new Object[size];
-        this.size = 0;
+    public CustomArrayList(int capacity) {
+        initStorage(capacity);
     }
 
     @Override
@@ -36,25 +59,12 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public boolean contains(Object o) {
-        if (o == null) {
-            for (int i = 0; i < size; i++) {
-                if (arr[i] == null) {
-                    return true;
-                }
-            }
-        } else {
-            for (int i = 0; i < size; i++) {
-                if (o.equals(arr[i])) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return indexOf(o) != -1;
     }
 
     @Override
     public Iterator<T> iterator() {
-        return new CustomListIterator<>(0);
+        return new CustomListIterator<>(0, modifications);
     }
 
     @Override
@@ -66,16 +76,18 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        throw new UnsupportedOperationException();
+        if (a.length != size) {
+            a = (T1[]) Array.newInstance(a.getClass(), size);
+        }
+        System.arraycopy(arr, 0, a, 0, size);
+        return a;
     }
 
     @Override
     public boolean add(T t) {
         modifications++;
         if (arr.length == size) {
-            Object[] newArr = new Object[(int) (size * FACTOR)];
-            System.arraycopy(arr, 0, newArr, 0, size);
-            arr = newArr;
+            extendStorage();
         }
         arr[size++] = t;
         return true;
@@ -84,22 +96,8 @@ public class CustomArrayList<T> implements List<T> {
     @Override
     public boolean remove(Object o) {
         modifications++;
-        int i = 0;
-        found:
-        {
-            if (o == null) {
-                for (; i < size; i++) {
-                    if (arr[i] == null) {
-                        break found;
-                    }
-                }
-            } else {
-                for (; i < size; i++) {
-                    if (o.equals(arr[i])) {
-                        break found;
-                    }
-                }
-            }
+        int i = indexOf(o);
+        if (i == -1) {
             return false;
         }
         System.arraycopy(arr, i + 1, arr, i, size - i - 1);
@@ -109,7 +107,12 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        for (Object o : c) {
+            if (!contains(o)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -126,32 +129,56 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-        throw new UnsupportedOperationException();
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (c.isEmpty()) {
+            return false;
+        }
+        while (arr.length - size < c.size()) {
+            extendStorage();
+        }
+        modifications++;
+        System.arraycopy(arr, index, arr, index + c.size(), size - index);
+        for (T t : c) {
+            modifications++;
+            arr[index++] = t;
+        }
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        modifications++;
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
+        modifications++;
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        modifications++;
+        initStorage(DEFAULT_CAPACITY);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
         return (T) arr[index];
     }
 
     @Override
     public T set(int index, T element) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
         modifications++;
         T prev = (T) arr[index];
         arr[index] = element;
@@ -160,35 +187,59 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public void add(int index, T element) {
-        throw new UnsupportedOperationException();
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        addAll(index, Collections.singleton(element));
     }
 
     @Override
     public T remove(int index) {
-        throw new UnsupportedOperationException();
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        modifications++;
+        T o = (T) arr[index];
+        System.arraycopy(arr, index + 1, arr, index, size - index);
+        arr[size--] = null;
+        return o;
     }
 
     @Override
     public int indexOf(Object o) {
-        throw new UnsupportedOperationException();
+        int i = 0;
+        for (; i < size; i++) {
+            if ((o == null && arr[i] == null) ||
+                    (o != null && o.equals(arr[i]))) {
+                break;
+            }
+        }
+        return i == size ? -1 : i;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        throw new UnsupportedOperationException();
+        for (int i = size - 1; i >= 0; i--) {
+            Object prev = arr[i];
+            if ((o == null && prev == null)
+                    || (o != null && o.equals(prev))) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public ListIterator<T> listIterator() {
-        return new CustomListIterator<>(0);
+        return new CustomListIterator<>(0, modifications);
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        if (!(index > 0 && index <= size)) {
+        if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
         }
-        return new CustomListIterator<>(index);
+        return new CustomListIterator<>(index, modifications);
     }
 
     @Override
@@ -196,13 +247,46 @@ public class CustomArrayList<T> implements List<T> {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Метод для расширения внутреннего хранилища
+     */
+    private void extendStorage() {
+        Object[] newArr = new Object[(int) (size * FACTOR)];
+        System.arraycopy(arr, 0, newArr, 0, size);
+        arr = newArr;
+    }
+
+    /**
+     * Метод для инициализации внутреннего хранилища
+     */
+    private void initStorage(int capacity) {
+        arr = new Object[capacity];
+        this.size = 0;
+    }
+
+    /**
+     * Итератор по списку
+     * @param <E> тип итератора (совпадает с типом массива)
+     */
     private class CustomListIterator<E> implements ListIterator<E> {
 
+        /**
+         * Индекс элемента который будет возвращен при вызове next()
+         */
         private int index;
+        /**
+         * Индекс элемента который будет возвращен при вызове previous()
+         */
         private int lastReturnedIndex = -1;
+        /**
+         * Состояние изменений основного массива.
+         * Состояние не должно изменяться при итерации.
+         */
+        private int state;
 
-        CustomListIterator(int index) {
+        CustomListIterator(int index, int state) {
             this.index = index;
+            this.state = state;
         }
 
         @Override
@@ -213,7 +297,8 @@ public class CustomArrayList<T> implements List<T> {
         @Override
         @SuppressWarnings("unchecked")
         public E next() {
-            if (index == size) {
+            checkForConcurrentModification();
+            if (index >= size) {
                 throw new NoSuchElementException();
             }
             lastReturnedIndex = index++;
@@ -222,12 +307,14 @@ public class CustomArrayList<T> implements List<T> {
 
         @Override
         public boolean hasPrevious() {
+            checkForConcurrentModification();
             return index > 0;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public E previous() {
+            checkForConcurrentModification();
             if (index == 0) {
                 throw new NoSuchElementException();
             }
@@ -247,6 +334,7 @@ public class CustomArrayList<T> implements List<T> {
 
         @Override
         public void remove() {
+            checkForConcurrentModification();
             if (lastReturnedIndex == -1) {
                 throw new IllegalStateException();
             }
@@ -262,6 +350,7 @@ public class CustomArrayList<T> implements List<T> {
 
         @Override
         public void set(E e) {
+            checkForConcurrentModification();
             if (lastReturnedIndex == -1) {
                 throw new IllegalStateException();
             }
@@ -270,17 +359,25 @@ public class CustomArrayList<T> implements List<T> {
 
         @Override
         public void add(E e) {
+            checkForConcurrentModification();
+            state++;
             modifications++;
             if (size == arr.length) {
-                Object[] newArr = new Object[(int) (size * FACTOR)];
-                System.arraycopy(arr, 0, newArr, 0, size);
-                arr = newArr;
-
+                CustomArrayList.this.extendStorage();
             }
             System.arraycopy(arr, index, arr, index + 1, size - index);
             arr[index] = e;
             index++;
             size++;
+        }
+
+        /**
+         * Изменение списка во время итерации недопустимо.
+         */
+        private void checkForConcurrentModification() {
+            if (state != modifications) {
+                throw new ConcurrentModificationException();
+            }
         }
     }
 }
