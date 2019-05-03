@@ -21,6 +21,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw-2.1</module>
+        <module>hw-annotations</module>
     </modules>
 
     <properties>
