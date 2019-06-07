@@ -1,0 +1,55 @@
+/opt/jdk-12/bin/java -cp hw-gc-2018.03-SNAPSHOT.jar -Xms512m -Xmx512m -Xlog:gc=debug:file=./logs/gc-%p-%t.log:tags,uptime,level:filecount=5,filesize=10m -XX:+UseConcMarkSweepGC App
+OpenJDK 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated in version 9.0 and will likely be removed in a future release.
+GC name:ParNew
+GC name:ConcurrentMarkSweep
+start:8101 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(109 ms), total gc time: 109
+start:16660 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(49 ms), total gc time: 158
+start:25249 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(71 ms), total gc time: 229
+start:25320 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(3987 ms), total gc time: 4216
+start:33622 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(46 ms), total gc time: 4262
+start:31307 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(5271 ms), total gc time: 9533
+start:41744 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(55 ms), total gc time: 9588
+start:38578 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(3302 ms), total gc time: 12890
+start:43881 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(261 ms), total gc time: 13151
+start:46142 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(262 ms), total gc time: 13413
+start:48403 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(263 ms), total gc time: 13676
+start:50763 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(0 ms), total gc time: 13676
+start:50763 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(526 ms), total gc time: 14202
+start:53289 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(430 ms), total gc time: 14632
+start:55719 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(304 ms), total gc time: 14936
+start:58147 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(0 ms), total gc time: 14936
+start:58147 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(541 ms), total gc time: 15477
+start:60688 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(458 ms), total gc time: 15935
+start:61215 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(0 ms), total gc time: 15935
+start:61215 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(437 ms), total gc time: 16372
+start:61652 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(461 ms), total gc time: 16833
+start:63847 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(0 ms), total gc time: 16833
+start:63847 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(406 ms), total gc time: 17239
+start:64253 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(473 ms), total gc time: 17712
+start:65388 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(0 ms), total gc time: 17712
+start:65388 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(441 ms), total gc time: 18153
+start:65830 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:No GC(469 ms), total gc time: 18622
+start:66385 Name:ParNew, action:end of minor GC, gcCause:Allocation Failure(0 ms), total gc time: 18622
+start:66385 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(442 ms), total gc time: 19064
+start:67106 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(485 ms), total gc time: 19549
+start:67721 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(434 ms), total gc time: 19983
+start:68270 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(523 ms), total gc time: 20506
+start:68826 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(407 ms), total gc time: 20913
+start:69298 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(572 ms), total gc time: 21485
+start:69881 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(407 ms), total gc time: 21892
+start:70338 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(580 ms), total gc time: 22472
+start:70918 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(407 ms), total gc time: 22879
+start:71378 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(582 ms), total gc time: 23461
+start:71960 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(407 ms), total gc time: 23868
+start:72420 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(580 ms), total gc time: 24448
+start:73000 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(408 ms), total gc time: 24856
+start:73462 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(580 ms), total gc time: 25436
+start:74042 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(406 ms), total gc time: 25842
+=== END OF APPLICATION LIFE == T_app = 79248, T_gc = 21892
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+start:74502 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(579 ms), total gc time: 26421
+	at SampleObject.<init>(SampleObject.java:18)
+	at Worker.createObjectsAddToList(Worker.java:28)
+	at Worker.run(Worker.java:18)
+	at App.main(App.java:38)
+start:75081 Name:ConcurrentMarkSweep, action:end of major GC, gcCause:Allocation Failure(412 ms), total gc time: 26833

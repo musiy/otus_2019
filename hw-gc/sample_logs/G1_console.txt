@@ -1,0 +1,60 @@
+/opt/jdk-12/bin/java -cp hw-gc-2018.03-SNAPSHOT.jar -Xms512m -Xmx512m -Xlog:gc=debug:file=./logs/gc-%p-%t.log:tags,uptime,level:filecount=5,filesize=10m -XX:+UseG1GC App
+GC name:G1 Young Generation
+GC name:G1 Old Generation
+start:1222 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(7 ms), total gc time: 7
+start:2448 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(11 ms), total gc time: 18
+start:3826 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(24 ms), total gc time: 42
+start:6184 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(32 ms), total gc time: 74
+start:9223 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(12 ms), total gc time: 86
+start:13232 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(15 ms), total gc time: 101
+start:18209 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(17 ms), total gc time: 118
+start:24512 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(20 ms), total gc time: 138
+start:30759 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(20 ms), total gc time: 158
+start:36072 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(18 ms), total gc time: 176
+start:38667 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Humongous Allocation(13 ms), total gc time: 189
+start:42605 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(15 ms), total gc time: 204
+start:45551 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(13 ms), total gc time: 217
+start:47767 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(8 ms), total gc time: 225
+start:49612 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(10 ms), total gc time: 235
+start:50979 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(27 ms), total gc time: 262
+start:52380 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(10 ms), total gc time: 272
+start:53745 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(9 ms), total gc time: 281
+start:55131 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(9 ms), total gc time: 290
+start:56499 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(9 ms), total gc time: 299
+start:57878 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(11 ms), total gc time: 310
+start:57899 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Humongous Allocation(3 ms), total gc time: 313
+start:58683 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(33 ms), total gc time: 346
+start:58717 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(201 ms), total gc time: 547
+start:60543 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(9 ms), total gc time: 556
+start:61912 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(34 ms), total gc time: 590
+start:63061 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(16 ms), total gc time: 606
+start:63077 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(165 ms), total gc time: 771
+start:64153 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(13 ms), total gc time: 784
+start:64166 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(157 ms), total gc time: 941
+start:64772 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(10 ms), total gc time: 951
+start:64783 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(175 ms), total gc time: 1126
+start:65210 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(14 ms), total gc time: 1140
+start:65224 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(267 ms), total gc time: 1407
+start:65677 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(15 ms), total gc time: 1422
+start:65692 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(265 ms), total gc time: 1687
+start:66080 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(7 ms), total gc time: 1694
+start:66087 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(268 ms), total gc time: 1962
+start:66480 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(8 ms), total gc time: 1970
+start:66488 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(262 ms), total gc time: 2232
+start:66801 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(2 ms), total gc time: 2234
+start:66803 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(161 ms), total gc time: 2395
+start:67025 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(2 ms), total gc time: 2397
+start:67027 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(185 ms), total gc time: 2582
+start:67212 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(169 ms), total gc time: 2751
+start:67381 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(1 ms), total gc time: 2752
+start:67382 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(170 ms), total gc time: 2922
+start:67552 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(165 ms), total gc time: 3087
+start:67717 Name:G1 Young Generation, action:end of minor GC, gcCause:G1 Evacuation Pause(0 ms), total gc time: 3087
+start:67717 Name:G1 Old Generation, action:end of major GC, gcCause:G1 Evacuation Pause(3 ms), total gc time: 3090
+=== END OF APPLICATION LIFE == T_app = 67670, T_gc = 2395
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at SampleObject.<init>(SampleObject.java:18)
+	at Worker.createObjectsAddToList(Worker.java:28)
+	at Worker.run(Worker.java:18)
+	at App.main(App.java:38)
+

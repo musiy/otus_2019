@@ -1,0 +1,44 @@
+/opt/jdk-12/bin/java -cp hw-gc-2018.03-SNAPSHOT.jar -Xms512m -Xmx512m -Xlog:gc=debug:file=./logs/gc-%p-%t.log:tags,uptime,level:filecount=5,filesize=10m -XX:+UnlockExperimentalVMOptions -XX:+UseZGC App
+GC name:ZGC
+start:901 Name:ZGC, action:end of major GC, gcCause:Warmup(49 ms), total gc time: 49
+start:1500 Name:ZGC, action:end of major GC, gcCause:Warmup(59 ms), total gc time: 108
+start:4100 Name:ZGC, action:end of major GC, gcCause:Warmup(51 ms), total gc time: 159
+start:8101 Name:ZGC, action:end of major GC, gcCause:Proactive(127 ms), total gc time: 286
+start:18400 Name:ZGC, action:end of major GC, gcCause:Proactive(193 ms), total gc time: 479
+start:28601 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(289 ms), total gc time: 768
+start:35600 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(352 ms), total gc time: 1120
+start:40200 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(328 ms), total gc time: 1448
+start:40700 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(311 ms), total gc time: 1759
+start:43400 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(368 ms), total gc time: 2127
+start:44900 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(340 ms), total gc time: 2467
+start:45800 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(376 ms), total gc time: 2843
+start:46501 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(379 ms), total gc time: 3222
+start:46900 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(353 ms), total gc time: 3575
+start:47300 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(375 ms), total gc time: 3950
+start:47700 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(349 ms), total gc time: 4299
+start:48100 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(351 ms), total gc time: 4650
+start:48500 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(363 ms), total gc time: 5013
+start:48900 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(359 ms), total gc time: 5372
+start:49300 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(374 ms), total gc time: 5746
+start:49701 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(368 ms), total gc time: 6114
+start:50100 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(370 ms), total gc time: 6484
+start:50500 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(370 ms), total gc time: 6854
+start:50900 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(366 ms), total gc time: 7220
+start:51300 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(363 ms), total gc time: 7583
+start:51701 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(376 ms), total gc time: 7959
+start:52100 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(375 ms), total gc time: 8334
+start:52500 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(365 ms), total gc time: 8699
+start:52900 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(375 ms), total gc time: 9074
+start:53300 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(370 ms), total gc time: 9444
+start:53700 Name:ZGC, action:end of major GC, gcCause:Allocation Rate(370 ms), total gc time: 9814
+start:54663 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(99 ms), total gc time: 9913
+start:54763 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(94 ms), total gc time: 10007
+start:54858 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(95 ms), total gc time: 10102
+start:54954 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(93 ms), total gc time: 10195
+start:55048 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(105 ms), total gc time: 10300
+start:55153 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(96 ms), total gc time: 10396
+start:55250 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(94 ms), total gc time: 10490
+start:55345 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(94 ms), total gc time: 10584
+start:55440 Name:ZGC, action:end of major GC, gcCause:Allocation Stall(4 ms), total gc time: 10588
+=== END OF APPLICATION LIFE == T_app = 55277, T_gc = 9814
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
