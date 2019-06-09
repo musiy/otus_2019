@@ -29,7 +29,7 @@ class Cartridge {
         return count;
     }
 
-    public int remove(int amount) {
+    public int take(int amount) {
         if (count - amount < 0) {
             throw new IllegalArgumentException("Can not obtain more bank notes then exists in cartridge");
         }

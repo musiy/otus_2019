@@ -5,13 +5,13 @@ package par;
  */
 public final class Par {
 
-    private Integer value;
+    private int value;
 
-    Par(Integer value) {
+    Par(int value) {
         this.value = value;
     }
 
-    public Integer getValue() {
+    public int getValue() {
         return value;
     }
 

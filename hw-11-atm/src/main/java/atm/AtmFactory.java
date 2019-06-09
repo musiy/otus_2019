@@ -17,11 +17,8 @@ public class AtmFactory {
         this.parService = parService;
     }
 
-    public AbstractCommonAtm createAtm() {
-        AbstractCommonAtm abstractCommonAtm = new NordeaAtm("AR3123");
-        abstractCommonAtm.config(getCellConfig());
-        abstractCommonAtm.init();
-        return abstractCommonAtm;
+    public AtmImpl createAtm() {
+        return new AtmImpl(AtmConfig.fromConfig(getCellConfig()));
     }
 
     /**

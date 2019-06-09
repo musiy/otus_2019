@@ -8,28 +8,14 @@ import java.util.*;
 /**
  * Реализация методов для всех банкоматов
  */
-public abstract class AbstractCommonAtm implements Atm {
+public class AtmImpl implements Atm {
 
-    private Map<Par, Cartridge> parCartridges = new HashMap<>();
+    private Map<Par, Cartridge> parCartridges = new TreeMap<>((o1, o2) -> o2.getValue() - o1.getValue());
 
-    private List<Par> sortedByValue;
-
-    /**
-     * Конфигурирование кассет банкомата
-     */
-    void config(Map<Par, Cell> cellConfig) {
-        for (Par par : cellConfig.keySet()) {
-            parCartridges.put(par, new Cartridge(cellConfig.get(par), 0));
+    AtmImpl(AtmConfig atmConfig) {
+        for (var entry : atmConfig.getCellConfig().entrySet()) {
+            parCartridges.put(entry.getKey(), new Cartridge(entry.getValue(), 0));
         }
-    }
-
-    /**
-     * Инициализация банкомата
-     */
-    void init() {
-        sortedByValue = new ArrayList<>(parCartridges.keySet());
-        sortedByValue.sort(Comparator.comparingInt(Par::getValue));
-        Collections.reverse(sortedByValue);
     }
 
     @Override
@@ -41,7 +27,7 @@ public abstract class AbstractCommonAtm implements Atm {
     @Override
     public Map<Par, Integer> giveMoney(int amount) {
         Map<Par, Integer> result = new HashMap<>();
-        Iterator<Par> it = sortedByValue.iterator();
+        Iterator<Par> it = parCartridges.keySet().iterator();
         while (amount > 0 && it.hasNext()) {
             Par par = it.next();
             int value = par.getValue();
@@ -54,7 +40,7 @@ public abstract class AbstractCommonAtm implements Atm {
         }
         for (var entry : result.entrySet()) {
             Cartridge cartridge = getCartridge(entry.getKey());
-            cartridge.remove(entry.getValue());
+            cartridge.take(entry.getValue());
         }
         return result;
     }
