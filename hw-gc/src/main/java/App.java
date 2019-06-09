@@ -20,22 +20,24 @@ import java.util.List;
  * ЭТО САМАЯ ВАЖНАЯ ЧАСТЬ РАБОТЫ:
  * Какой gc лучше и почему?
  * <p>
- * -Xms512m
- * -Xmx512m
- * -Xlog:gc=debug:file=./logs/gc-%p-%t.log:tags,uptime,level:filecount=5,filesize=10m
- * -XX:+HeapDumpOnOutOfMemoryError
- * -XX:HeapDumpPath=./logs/dump.bin
- * -XX:+UseG1GC
- * -XX:MaxGCPauseMillis=30
+
+  -Xms512m
+  -Xmx512m
+  -Xlog:gc=debug:file=./logs/gc-%p-%t.log:tags,uptime,level:filecount=5,filesize=10m
+  -XX:+HeapDumpOnOutOfMemoryError
+  -XX:HeapDumpPath=./logs/dump.bin
+  -XX:+UseG1GC
+  -XX:MaxGCPauseMillis=30
  */
 public class App {
 
     public static void main(String[] args) throws Exception {
-        GcNotificationListener gcListener = new GcNotificationListener();
+        ObjectStorage storage = new ObjectStorage();
+        GcNotificationListener gcListener = new GcNotificationListener(storage);
         switchOnMonitoring(gcListener);
         long l = System.currentTimeMillis();
         try {
-            new Worker().run();
+            new Worker(storage).run();
             System.out.println("Never should write this message");
         } finally {
             long duration = System.currentTimeMillis() - l;
