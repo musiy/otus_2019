@@ -24,6 +24,7 @@
         <module>hw-annotations</module>
         <module>hw-logging</module>
         <module>hw-gc</module>
+        <module>hw-11-atm</module>
     </modules>
 
     <properties>
