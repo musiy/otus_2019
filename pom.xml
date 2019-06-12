@@ -25,6 +25,7 @@
         <module>hw-logging</module>
         <module>hw-gc</module>
         <module>hw-11-atm</module>
+        <module>hw-13-atm-dept</module>
     </modules>
 
     <properties>
