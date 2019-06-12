@@ -23,6 +23,7 @@
         <module>hw-2.1</module>
         <module>hw-annotations</module>
         <module>hw-logging</module>
+        <module>hw-gc</module>
         <module>hw-11-atm</module>
     </modules>
 
