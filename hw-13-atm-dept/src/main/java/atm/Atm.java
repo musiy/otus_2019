@@ -11,7 +11,7 @@ public interface Atm {
 
     int getBalance();
 
-    Map<Par, Integer> issueMoney(int money);
+    Map<Par, Integer> issueMoney(int money) throws Exception;
 
     boolean checkHealth();
 

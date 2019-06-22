@@ -2,6 +2,9 @@ package atm.command;
 
 import atm.Atm;
 
+/**
+ * Собирает баланс со всех переданных банкоматов.
+ */
 public class GrabBalanceCommand implements AtmCommand {
 
     private int totalBalance = 0;

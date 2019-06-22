@@ -3,6 +3,7 @@ package atm;
 import atm.cartridge.Cartridge;
 import atm.command.AtmCommand;
 import atm.config.AtmConfiguration;
+import atm.exceptions.NoChargeException;
 import atm.memento.AtmState;
 import atm.memento.Memento;
 import atm.memento.MementoAtm;
@@ -11,7 +12,10 @@ import atm.notify.HealthCheckAtmEvent;
 import atm.notify.IssueMoneyAtmEvent;
 import par.Par;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class AtmImpl extends AtmCommon {
 
@@ -46,7 +50,7 @@ public class AtmImpl extends AtmCommon {
     }
 
     @Override
-    public Map<Par, Integer> issueMoney(int amount) {
+    public Map<Par, Integer> issueMoney(int amount) throws Exception {
         Map<Par, Integer> result = new HashMap<>();
         Iterator<Par> it = cartridgesByPar.keySet().iterator();
         while (amount > 0 && it.hasNext()) {
@@ -58,7 +62,7 @@ public class AtmImpl extends AtmCommon {
             amount -= cnt * value;
         }
         if (amount != 0) {
-            throw new RuntimeException("No charge");
+            throw new NoChargeException();
         }
         for (var entry : result.entrySet()) {
             Cartridge cartridge = getCartridge(entry.getKey());
@@ -66,13 +70,6 @@ public class AtmImpl extends AtmCommon {
         }
         notifyEvent(new IssueMoneyAtmEvent());
         return result;
-    }
-
-    private Cartridge getCartridge(Par par) {
-        if (!cartridgesByPar.containsKey(par)) {
-            throw new IllegalArgumentException("There is no cartridge with par: " + par);
-        }
-        return cartridgesByPar.get(par);
     }
 
     @Override
@@ -101,5 +98,12 @@ public class AtmImpl extends AtmCommon {
         AtmState state = (AtmState) memento.getState();
         cartridgesByPar.clear();
         cartridgesByPar.putAll(state.getCartridges());
+    }
+
+    private Cartridge getCartridge(Par par) {
+        if (!cartridgesByPar.containsKey(par)) {
+            throw new IllegalArgumentException("There is no cartridge with par: " + par);
+        }
+        return cartridgesByPar.get(par);
     }
 }

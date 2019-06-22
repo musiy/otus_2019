@@ -1,5 +1,8 @@
 package atm.memento;
 
+/**
+ * Хранит состояние банкомата
+ */
 public class MementoAtm implements Memento<AtmState> {
 
     private AtmState atmState;

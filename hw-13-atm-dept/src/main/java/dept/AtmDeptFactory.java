@@ -10,7 +10,7 @@ public class AtmDeptFactory {
         this.atmFactory = atmFactory;
     }
 
-    public AtmDept create() {
+    public AtmDept create() throws Exception {
         return AtmDept.Builder.create()
                 .addAtm(atmFactory.createAtm())
                 .addAtm(atmFactory.createAtm())

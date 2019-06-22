@@ -6,7 +6,6 @@ import atm.command.GrabBalanceCommand;
 import atm.memento.Caretaker;
 import atm.memento.CaretakerImpl;
 import atm.memento.Memento;
-import atm.memento.MementoAtm;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +46,14 @@ public class AtmDept {
         return Optional.empty();
     }
 
+    public void restoreAtmState(AtmCommon atm) {
+        if (!caretakers.containsKey(atm)) {
+            throw new IllegalArgumentException("Atm not found: " + atm);
+        }
+        Memento memento = caretakers.get(atm).getLast();
+        atm.restoreFromSnapshot(memento);
+    }
+
     private void saveAtmState() {
         AtmCommon current = head;
         while (current != null) {
@@ -55,14 +62,6 @@ public class AtmDept {
             caretaker.save(current.makeSnapshot());
             current = current.getNext();
         }
-    }
-
-    public void restoreAtmState(AtmCommon atm) {
-        if (!caretakers.containsKey(atm)) {
-            throw new IllegalArgumentException();
-        }
-        Memento memento = caretakers.get(atm).getLast();
-        atm.restoreFromSnapshot(memento);
     }
 
     public static class Builder {

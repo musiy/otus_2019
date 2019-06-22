@@ -1,5 +1,7 @@
 package atm.cartridge;
 
+import atm.exceptions.CartridgeOutOfMoneyException;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +10,9 @@ import java.io.Serializable;
  */
 public class Cartridge implements Serializable {
 
-    // число банкнот в ячейке
+    /**
+     * Число банкнот в ячейке
+     */
     private int count;
 
     public Cartridge(int count) {
@@ -24,9 +28,9 @@ public class Cartridge implements Serializable {
         return count;
     }
 
-    public int take(int amount) {
+    public int take(int amount) throws Exception {
         if (count - amount < 0) {
-            throw new IllegalArgumentException("Can not obtain more bank notes then exists in cartridge");
+            throw new CartridgeOutOfMoneyException();
         }
         count -= amount;
         return count;

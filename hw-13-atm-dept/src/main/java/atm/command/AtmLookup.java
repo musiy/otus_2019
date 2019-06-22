@@ -2,11 +2,14 @@ package atm.command;
 
 import atm.Atm;
 
+/**
+ * Команда проверяет, что переданый банкомат - искомый.
+ */
 public class AtmLookup implements AtmCommand {
 
     private String id;
 
-    private Atm atm = null;
+    private Atm atm;
 
     public AtmLookup(String id) {
         this.id = id;

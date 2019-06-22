@@ -6,6 +6,9 @@ import par.Par;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Используется для хранения состояния банкомата
+ */
 public class AtmState {
 
     private Map<Par, Cartridge> cartridges = new HashMap<>();

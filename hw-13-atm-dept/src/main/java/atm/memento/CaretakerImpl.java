@@ -2,7 +2,12 @@ package atm.memento;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.NoSuchElementException;
 
+/**
+ * Организует стек состояний.
+ * После добавления в стек, число элементов не может быть меньше одного.
+ */
 public class CaretakerImpl implements Caretaker {
 
     private Deque<Memento> stack = new ArrayDeque<>();
@@ -15,7 +20,7 @@ public class CaretakerImpl implements Caretaker {
     @Override
     public Memento getLast() {
         if (stack.size() == 0) {
-            throw new IllegalStateException("No more elements");
+            throw new NoSuchElementException();
         }
         if (stack.size() == 1) {
             return stack.getLast();

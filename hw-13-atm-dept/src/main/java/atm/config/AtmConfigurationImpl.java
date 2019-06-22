@@ -1,11 +1,15 @@
 package atm.config;
 
 import atm.cartridge.Cartridge;
+import atm.exceptions.IllegalAtmConfiguration;
 import par.Par;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Реализация конфигурации банкомата
+ */
 public class AtmConfigurationImpl implements AtmConfiguration {
 
     private Map<Par, Cartridge> cartridgesByPar;
@@ -28,9 +32,9 @@ public class AtmConfigurationImpl implements AtmConfiguration {
             return atmConfiguration;
         }
 
-        public Builder addCartridge(Par par, int count) {
+        public Builder addCartridge(Par par, int count) throws Exception {
             if (cartridgesByPar.containsKey(par)) {
-                throw new IllegalArgumentException("Cartridge with par already exist: " + par);
+                throw new IllegalAtmConfiguration(par);
             }
             cartridgesByPar.put(par, new Cartridge(count));
             return this;
