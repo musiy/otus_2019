@@ -1,204 +1,158 @@
 package engine;
 
-import anno.Id;
-import engine.consumers.ParamsConsumerSupplierFactory;
+import engine.consumers.ParamsSupplierFactory;
+import engine.exceptions.AmbiguousSqlResult;
+import engine.exceptions.ReflectionAccessException;
+import engine.functions.FunctionWithSqlException;
+import engine.reflections.ClassMetaInfo;
+import engine.reflections.ReflectionHelper;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
 
-    private ParamsConsumerSupplierFactory paramConsumerFactory = new ParamsConsumerSupplierFactory();
-
-    private static final String INSERT_TEMPLATE = "INSERT INTO $table_name ($fields) VALUES ($wildcards)";
-
-    private static final String UPDATE_TEMPLATE = "UPDATE $table_name SET $set_statement WHERE $id = ?";
-
-    private static final String SELECT_TEMPLATE = "SELECT $fields FROM $table_name WHERE $id = ?";
+    private ParamsSupplierFactory paramConsumerFactory = new ParamsSupplierFactory();
 
     private Connection connection;
 
     private Class<T> clazz;
 
+    /**
+     * Запрос для вставки данных INSERT
+     */
     private String insertQuery;
 
+    /**
+     * Запрос для обновления данных UPDATE
+     */
     private String updateQuery;
 
+    /**
+     * Запрос выборки данных
+     */
     private String selectQuery;
 
-    private List<Field> fields = new ArrayList<>();
-
-    private Field idField;
+    /**
+     * Мета информация о структуре класса
+     */
+    private ClassMetaInfo classMetaInfo;
 
     public JdbcTemplateImpl(Connection connection, Class<T> clazz) {
         this.connection = connection;
         this.clazz = clazz;
-        verifyAnnotationExist(clazz);
+        classMetaInfo = ClassMetaInfo.fromClass(clazz);
+
         insertQuery = makeInsertQuery();
         updateQuery = makeUpdateQuery();
         selectQuery = makeSelectQuery();
     }
 
     private String makeInsertQuery() {
-        List<String> fieldNames = fields.stream().map(Field::getName).collect(Collectors.toList());
-        String fields = String.join(", ", fieldNames.toArray(new String[0]));
+        String fields = String.join(", ", classMetaInfo.getFieldNames().toArray(new String[0]));
         StringBuilder wildcards = new StringBuilder();
-        for (int i = 0; i < this.fields.size(); i++) {
+        for (int i = 0; i < classMetaInfo.getFields().size(); i++) {
             wildcards.append(i == 0 ? "?" : ", ?");
         }
-        return INSERT_TEMPLATE
+        final String insertQueryTemplate = "INSERT INTO $table_name ($fields) VALUES ($wildcards)";
+        return insertQueryTemplate
                 .replace("$table_name", clazz.getSimpleName().toLowerCase())
                 .replace("$fields", fields)
-                .replace("$wildcards", wildcards.toString());
+                .replace("$wildcards", wildcards);
     }
 
     private String makeUpdateQuery() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < this.fields.size(); i++) {
-            Field field = fields.get(i);
+        for (int i = 0; i < classMetaInfo.getFields().size(); i++) {
+            Field field = classMetaInfo.getFields().get(i);
             if (i > 0) {
                 sb.append(", ");
             }
             sb.append(field.getName()).append(" = ?");
         }
-        return UPDATE_TEMPLATE
+        final String updateQueryTemplate = "UPDATE $table_name SET $set_statement WHERE $id = ?";
+        return updateQueryTemplate
                 .replace("$table_name", clazz.getSimpleName().toLowerCase())
                 .replace("$set_statement", sb.toString())
-                .replace("$id", idField.getName());
+                .replace("$id", classMetaInfo.getIdField().getName());
     }
 
     private String makeSelectQuery() {
-        List<String> fieldNames = fields.stream().map(Field::getName).collect(Collectors.toList());
-        fieldNames.add(idField.getName());
+        List<String> fieldNames = classMetaInfo.getFields().stream().map(Field::getName).collect(Collectors.toList());
+        fieldNames.add(classMetaInfo.getIdField().getName());
         String fields = String.join(", ", fieldNames.toArray(new String[0]));
-        return SELECT_TEMPLATE
+        final String selectQueryTemplate = "SELECT $fields FROM $table_name WHERE $id = ?";
+        return selectQueryTemplate
                 .replace("$table_name", clazz.getSimpleName().toLowerCase())
                 .replace("$fields", fields)
-                .replace("$id", idField.getName());
+                .replace("$id", classMetaInfo.getIdField().getName());
     }
 
     @Override
-    public void create(T obj) {
-        try {
-            int id = executeInsert(insertQuery, obj);
-            setFieldValue(idField, obj, id);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void create(T obj) throws SQLException {
+        int id = executeInsert(obj);
+        setFieldValue(classMetaInfo.getIdField(), obj, id);
     }
 
-    private int executeInsert(String sql, T obj) throws SQLException {
-        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            for (int i = 0; i < fields.size(); i++) {
-                Field field = fields.get(i);
-                BiConsumer<Integer, Object> consumer = paramConsumerFactory.paramConsumer(field.getType(), ps);
-                consumer.accept(i + 1, getFieldValue(field, obj));
+    private int executeInsert(T obj) throws SQLException {
+        try (PreparedStatement ps = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+            for (int i = 0; i < classMetaInfo.getFields().size(); i++) {
+                Field field = classMetaInfo.getFields().get(i);
+                ps.setObject(i + 1, getFieldValue(field, obj));
             }
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                } else {
-                    throw new RuntimeException("Inserting failed");
-                }
+                rs.next();
+                return rs.getInt(1);
             }
         }
     }
 
-    private Object getFieldValue(Field field, Object o) {
-        boolean canAccess = field.canAccess(o);
-        field.setAccessible(true);
-        try {
-            Object value = field.get(o);
-            field.setAccessible(canAccess);
-            return value;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Object setFieldValue(Field field, Object obj, Object value) {
-        boolean canAccess = field.canAccess(obj);
-        field.setAccessible(true);
-        try {
-            field.set(obj, value);
-            field.setAccessible(canAccess);
-            return value;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
-    public void update(T obj) {
-        try {
-            executeUpdate(obj);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void update(T obj) throws SQLException {
+        executeUpdate(obj);
     }
 
     private int executeUpdate(T obj) throws SQLException {
         try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
-            for (int i = 0; i < fields.size(); i++) {
-                Field field = fields.get(i);
-                BiConsumer<Integer, Object> consumer = paramConsumerFactory.paramConsumer(field.getType(), ps);
-                consumer.accept(i + 1, getFieldValue(field, obj));
+            for (int i = 0; i < classMetaInfo.getFields().size(); i++) {
+                Field field = classMetaInfo.getFields().get(i);
+                ps.setObject(i + 1, getFieldValue(field, obj));
             }
-            long id = (long) getFieldValue(idField, obj);
-            ps.setLong(fields.size() + 1, id);
+            long id = (long) getFieldValue(classMetaInfo.getIdField(), obj);
+            ps.setLong(classMetaInfo.getFields().size() + 1, id);
             return ps.executeUpdate();
         }
     }
 
     @Override
-    public T load(long id) {
-        try {
-            List<T> list = executeQuery(selectQuery, id, this::objectFromResultSet);
-            if (list.size() == 1) {
-                return list.get(0);
-            } else {
-                throw new RuntimeException("Too many or empty result");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    public T load(long id) throws SQLException {
+        List<T> list = executeQuery(selectQuery, id, this::objectFromResultSet);
+        if (list.size() == 1) {
+            return list.get(0);
+        } else {
+            throw new AmbiguousSqlResult(list);
         }
     }
 
     private T objectFromResultSet(ResultSet rs) {
-        T object = createObject();
-        for (Field field : fields) {
+        T object = ReflectionHelper.createObject(clazz);
+            for (Field field : classMetaInfo.getFields()) {
             Function<String, Object> supplier = paramConsumerFactory.paramSupplier(field.getType(), rs);
             Object value = supplier.apply(field.getName());
             setFieldValue(field, object, value);
         }
-        Function<String, Object> supplier = paramConsumerFactory.paramSupplier(idField.getType(), rs);
-        Object value = supplier.apply(idField.getName());
-        setFieldValue(idField, object, value);
+        Function<String, Object> supplier = paramConsumerFactory.paramSupplier(classMetaInfo.getIdField().getType(), rs);
+        Object value = supplier.apply(classMetaInfo.getIdField().getName());
+        setFieldValue(classMetaInfo.getIdField(), object, value);
         return object;
     }
 
-    private T createObject() {
-        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-        @SuppressWarnings("unchecked")
-        Constructor<T> defaultConstructor = (Constructor<T>) constructors[0];
-        try {
-            return defaultConstructor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private List<T> executeQuery(String sql, long id, Function<ResultSet, T> toObject) throws SQLException {
+    private List<T> executeQuery(String sql, long id, FunctionWithSqlException<ResultSet, T> toObject) throws SQLException {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, id);
             try (ResultSet resultSet = ps.executeQuery()) {
@@ -211,25 +165,19 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
         }
     }
 
-    private void verifyAnnotationExist(Class<?> clazz) {
-        int count = 0;
-        idField = null;
-        for (Field field : clazz.getDeclaredFields()) {
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
-                if (annotation.annotationType() == Id.class) {
-                    idField = field;
-                    count++;
-                }
-            }
-            if (field != idField) {
-                fields.add(field);
-            }
-        }
-        if (count == 0) {
-            throw new RuntimeException("Data class should contain primary key marked with @Id annotation");
-        } else if (count > 1) {
-            throw new RuntimeException("Only one field should be marked with @Id annotation");
+    private Object getFieldValue(Field field, Object obj) {
+        try {
+            return ReflectionHelper.getFieldValue(field, obj);
+        } catch (IllegalAccessException e) {
+            throw new ReflectionAccessException(e);
         }
     }
 
+    private void setFieldValue(Field field, Object obj, Object value) {
+        try {
+            ReflectionHelper.setFieldValue(field, obj, value);
+        } catch (IllegalAccessException e) {
+            throw new ReflectionAccessException(e);
+        }
+    }
 }

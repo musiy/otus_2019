@@ -14,7 +14,7 @@ public class AppJdbcTemplate {
 
     private Connection connection;
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws Exception {
         new AppJdbcTemplate().run();
     }
 
@@ -23,14 +23,14 @@ public class AppJdbcTemplate {
         this.connection.setAutoCommit(false);
     }
 
-    private void run() {
+    private void run() throws Exception {
         createTableUser(connection);
         createTableAccount(connection);
         testUser();
         testAccount();
     }
 
-    private void testUser() {
+    private void testUser() throws SQLException {
         JdbcTemplate<User> jdbcTemplate = new JdbcTemplateImpl<>(connection, User.class);
         User user = newUser();
         jdbcTemplate.create(user);
@@ -40,7 +40,7 @@ public class AppJdbcTemplate {
         System.out.println(user.equals(user2));
     }
 
-    private void testAccount() {
+    private void testAccount() throws SQLException {
         JdbcTemplate<Account> jdbcTemplate = new JdbcTemplateImpl<>(connection, Account.class);
         Account account = newAccount();
         jdbcTemplate.create(account);
@@ -64,19 +64,15 @@ public class AppJdbcTemplate {
         return account;
     }
 
-    private void createTableUser(Connection connection) {
+    private void createTableUser(Connection connection) throws SQLException {
         try (PreparedStatement pst = connection.prepareStatement("create table user(id long auto_increment, name varchar(50), age int)")) {
             pst.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    private void createTableAccount(Connection connection) {
+    private void createTableAccount(Connection connection) throws SQLException {
         try (PreparedStatement pst = connection.prepareStatement("create table account(no bigint(20) NOT NULL auto_increment, type varchar(255), rest number)")) {
             pst.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 }
