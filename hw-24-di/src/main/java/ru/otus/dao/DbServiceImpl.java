@@ -17,9 +17,9 @@ import java.util.List;
 @Service
 public class DbServiceImpl implements DbService {
 
-    private Cache<String, Object> cache;
+    private final Cache<String, Object> cache;
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public DbServiceImpl(Cache<String, Object> cache, SessionFactory sessionFactory) {
         this.cache = cache;
