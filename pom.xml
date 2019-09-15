@@ -28,6 +28,10 @@
         <module>hw-13-atm-dept</module>
         <module>hw-13-serialization</module>
         <module>hw-15-jdbc</module>
+        <module>hw-19-hibernate-orm</module>
+        <module>hw-21-cache</module>
+        <module>hw-23-web-server-jetty</module>
+        <module>hw-24-di</module>
     </modules>
 
     <properties>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Домашнее задание. Сообщеения и очереди.</title>
+    <meta charset="utf-8">
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+<div id="main-content" class="container">
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="fio">Фамилиия Имя Отчество</label>
+            <input id="fio" name="fio" type="text" class="form-control" placeholder="ФИО">
+            <label for="age">Возраст</label>
+            <input id="age" name="age" type="number" class="form-control" placeholder="Возраст">
+            <button id="save-user" class="btn btn-default" type="submit">Send</button>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="conversation" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Идентификатор</th>
+                <th>ФИО</th>
+                <th>Возраст</th>
+            </tr>
+            </thead>
+            <tbody id="users"></tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
